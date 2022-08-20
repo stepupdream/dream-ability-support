@@ -26,7 +26,7 @@ abstract class BaseCommand extends Command
      * @param  string  $description
      * @return void
      */
-    protected function commandDetailLog(string $description = 'Command run detail'): void
+    public function commandDetailLog(string $description = 'Command run detail'): void
     {
         (new Info($this->output))->render($description);
         $runTime = number_format((microtime(true) - LARAVEL_START) * 1000).'ms';
