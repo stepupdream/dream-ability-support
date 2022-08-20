@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace StepUpDream\DreamAbilitySupport\Test\Supports\File;
 
-use StepUpDream\DreamAbilitySupport\Supports\FileOperation;
+use StepUpDream\DreamAbilitySupport\Supports\File\FileOperation;
 use StepUpDream\DreamAbilitySupport\Test\TestCase;
 
 class FileOperationTest extends TestCase

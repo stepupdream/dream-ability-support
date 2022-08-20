@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace StepUpDream\DreamAbilitySupport\Supports;
+namespace StepUpDream\DreamAbilitySupport\Supports\File;
 
 use Illuminate\Filesystem\Filesystem;
 use LogicException;
@@ -75,7 +75,7 @@ class YamlFileOperation extends FileOperation
      * @return bool
      * @see \Illuminate\Filesystem\Filesystem::isDirectory
      */
-    private function isDirectory(string $directory): bool
+    protected function isDirectory(string $directory): bool
     {
         return is_dir($directory);
     }
@@ -159,7 +159,7 @@ class YamlFileOperation extends FileOperation
      * @return string
      * @see \Illuminate\Filesystem\Filesystem::extension
      */
-    private function extension(string $path): string
+    protected function extension(string $path): string
     {
         return pathinfo($path, PATHINFO_EXTENSION);
     }
@@ -170,7 +170,7 @@ class YamlFileOperation extends FileOperation
      * @param  mixed[]  $array
      * @return bool
      */
-    private function isMultidimensional(array $array): bool
+    protected function isMultidimensional(array $array): bool
     {
         return count($array) !== count($array, 1);
     }

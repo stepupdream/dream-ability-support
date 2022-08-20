@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace StepUpDream\DreamAbilitySupport\Test\Supports\File;
 
-use StepUpDream\DreamAbilitySupport\Supports\YamlFileOperation;
+use StepUpDream\DreamAbilitySupport\Supports\File\YamlFileOperation;
 use StepUpDream\DreamAbilitySupport\Test\TestCase;
 
 class YamlFileOperationTest extends TestCase

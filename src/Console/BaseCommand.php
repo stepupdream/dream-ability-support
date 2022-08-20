@@ -26,7 +26,7 @@ abstract class BaseCommand extends Command
      * @param  string  $description
      * @return void
      */
-    public function commandDetailLog(string $description = 'Command run detail'): void
+    protected function commandDetailLog(string $description = 'Command run detail'): void
     {
         (new Info($this->output))->render($description);
         $runTime = number_format((microtime(true) - LARAVEL_START) * 1000).'ms';
@@ -40,7 +40,7 @@ abstract class BaseCommand extends Command
      * @param  mixed[]  $array
      * @return bool
      */
-    public function isMultidimensional(array $array): bool
+    protected function isMultidimensional(array $array): bool
     {
         return count($array) !== count($array, 1);
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace StepUpDream\DreamAbilitySupport\Supports;
+namespace StepUpDream\DreamAbilitySupport\Supports\File;
 
 use ErrorException;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
