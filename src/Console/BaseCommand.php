@@ -40,7 +40,7 @@ abstract class BaseCommand extends Command
      * @param  mixed[]  $array
      * @return bool
      */
-    protected function isMultidimensional(array $array): bool
+    public function isMultidimensional(array $array): bool
     {
         return count($array) !== count($array, 1);
     }
