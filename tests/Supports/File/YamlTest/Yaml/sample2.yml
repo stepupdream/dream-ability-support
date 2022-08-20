@@ -1,0 +1,9 @@
+- database_directory_name: 'MasterData'
+  domain_group: 'Test'
+  columns:
+    - name: 'id'
+      description: 'id'
+    - name: 'name'
+      description: 'name'
+    - name: 'level'
+      description: 'level'

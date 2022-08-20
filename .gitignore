@@ -21,3 +21,9 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
+
+.idea/
+composer.lock
+.php_cs.cache
+.php-cs-fixer.cache
+vendor-bin/

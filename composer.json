@@ -1,0 +1,52 @@
+{
+  "name": "stepupdream/dream-ability-support",
+  "description": "support package",
+  "license": "MIT",
+  "keywords": [
+    "laravel",
+    "yaml"
+  ],
+  "require": {
+    "php": ">=8.0.0",
+    "laravel/framework": "^9"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^7",
+    "phpunit/phpunit": "^9.5",
+    "nunomaduro/larastan": "^1.0",
+    "bamarni/composer-bin-plugin": "^1.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "StepUpDream\\DreamAbilitySupport\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "StepUpDream\\DreamAbilitySupport\\Test\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+      ]
+    }
+  },
+  "scripts": {
+    "test-all": [
+      "vendor/bin/phpunit",
+      "vendor/bin/php-cs-fixer fix -v --diff --dry-run",
+      "vendor/bin/phpcs --standard=phpcs.xml .",
+      "vendor/bin/phpstan analyse"
+    ],
+    "test": "vendor/bin/phpunit",
+    "format": "vendor/bin/php-cs-fixer fix -v --diff --dry-run",
+    "phpcs": "vendor/bin/phpcs --standard=phpcs.xml ./",
+    "phpstan": "vendor/bin/phpstan analyse"
+  },
+  "config": {
+    "allow-plugins": {
+      "bamarni/composer-bin-plugin": true
+    }
+  }
+}
