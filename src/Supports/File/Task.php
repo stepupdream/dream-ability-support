@@ -42,7 +42,7 @@ class Task extends Component
             $description = app($mutator)->__invoke($description);
         }
 
-        $descriptionWidth = mb_strlen($description);
+        $descriptionWidth = strlen($description);
         $this->output->write("  $description ", false, $verbosity);
         $startTime = microtime(true);
         $result = '';
@@ -51,7 +51,7 @@ class Task extends Component
             $result = ($task ?: fn () => 'DONE')();
         } finally {
             $runTime = $task ? (' '.number_format((microtime(true) - $startTime) * 1000).'ms') : '';
-            $runTimeWidth = mb_strlen($runTime);
+            $runTimeWidth = strlen($runTime);
             $width = min(terminal()->width(), 150);
             $dots = max($width - $descriptionWidth - $runTimeWidth - 10, 0);
             $this->output->write(str_repeat('<fg=gray>.</>', $dots), false, $verbosity);
