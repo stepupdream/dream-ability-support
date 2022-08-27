@@ -97,20 +97,20 @@ class FileOperation
     }
 
     /**
-     * Create a directory.
+     * Make a directory.
      *
-     * @param  string  $path
+     * @param  string  $directoryPath
      * @param  int  $mode
      * @param  bool  $recursive
      * @return void
      * @see \Illuminate\Filesystem\Filesystem::makeDirectory
      */
-    private function makeDirectory(string $path, int $mode = 0755, bool $recursive = false): void
+    private function makeDirectory(string $directoryPath, int $mode = 0755, bool $recursive = false): void
     {
-        $result = mkdir($path, $mode, $recursive);
+        $result = mkdir($directoryPath, $mode, $recursive);
 
         if (! $result) {
-            throw new LogicException($path.': Failed to make directory');
+            throw new LogicException($directoryPath.': Failed to make directory');
         }
     }
 
@@ -192,5 +192,27 @@ class FileOperation
         }
 
         throw new FileNotFoundException("File does not exist at path {$path}.");
+    }
+
+    /**
+     * Whether a file with the same filename exists or not.
+     *
+     * @param  string  $directory
+     * @return bool
+     */
+    public function isSameFileNameExist(string $directory): bool
+    {
+        $names = [];
+        $files = $this->allFiles($directory);
+        foreach ($files as $file) {
+            if (in_array($file->getFilename(), $names, true)) {
+                return true;
+            }
+
+            $names[] = $file->getFilename();
+
+        }
+
+        return false;
     }
 }

@@ -53,4 +53,15 @@ class FileOperationTest extends TestCase
             rmdir($outputDirectoryPath);
         }
     }
+
+    /**
+     * @test
+     */
+    public function isSameFileNameExist(): void
+    {
+        $fileOperation = $this->app->make(FileOperation::class);
+        $result = $fileOperation->isSameFileNameExist(__DIR__.'/Sample2');
+
+        self::assertTrue($result);
+    }
 }
