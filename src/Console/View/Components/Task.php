@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace StepUpDream\DreamAbilitySupport\Supports\File;
+namespace StepUpDream\DreamAbilitySupport\Console\View\Components;
 
 use Illuminate\Console\View\Components\Component;
 use Illuminate\Console\View\Components\Mutators\EnsureDynamicContentIsHighlighted;
