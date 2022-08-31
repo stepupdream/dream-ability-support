@@ -210,7 +210,6 @@ class FileOperation
             }
 
             $names[] = $file->getFilename();
-
         }
 
         return false;

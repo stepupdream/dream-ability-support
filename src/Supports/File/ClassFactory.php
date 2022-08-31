@@ -9,7 +9,7 @@ use LogicException;
 class ClassFactory
 {
     /**
-     * @var array
+     * @var object[]
      */
     protected static array $madeInstance;
 
@@ -19,16 +19,16 @@ class ClassFactory
     protected static string $vendorDirectory;
 
     /**
-     * @var array
+     * @var string[]
      */
-    protected static array $autoloadClassmapData;
+    protected static array $autoloadClassmap;
 
     /**
      * Convert a value to studly caps case.
      *
      * @param  string  $classMapKey
      * @param  string  $cwd
-     * @return Object
+     * @return object
      */
     public static function make(string $classMapKey, string $cwd = '.'): object
     {
@@ -40,11 +40,11 @@ class ClassFactory
             static::$vendorDirectory = $cwd.'/vendor';
         }
 
-        if (! isset(static::$autoloadClassmapData)) {
-            static::$autoloadClassmapData = require(static::$vendorDirectory.'/composer/autoload_classmap.php');
+        if (! isset(static::$autoloadClassmap)) {
+            static::$autoloadClassmap = require static::$vendorDirectory.'/composer/autoload_classmap.php';
         }
 
-        if (! isset(static::$autoloadClassmapData[$classMapKey])) {
+        if (! isset(static::$autoloadClassmap[$classMapKey])) {
             throw new LogicException(sprintf(
                 'It does not exist in the autoload class map. Run composer dump-autoload to resolve the issue. (%s)',
                 $classMapKey
