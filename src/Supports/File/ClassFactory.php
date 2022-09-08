@@ -24,7 +24,12 @@ class ClassFactory
     protected static array $autoloadClassmap;
 
     /**
-     * Convert a value to studly caps case.
+     * @var string[]
+     */
+    protected static array $autoloadClassmapInversion;
+
+    /**
+     * Create a class.
      *
      * @param  string  $classMapKey
      * @param  string  $cwd
@@ -54,5 +59,44 @@ class ClassFactory
         static::$madeInstance[$classMapKey] = new $classMapKey();
 
         return static::$madeInstance[$classMapKey];
+    }
+
+    /**
+     * Create a class.
+     *
+     * @param  string  $filePath
+     * @param  string  $cwd
+     * @return object
+     */
+    public static function makeByPath(string $filePath, string $cwd = '.'): object
+    {
+        if (isset(static::$madeInstance[$filePath])) {
+            return static::$madeInstance[$filePath];
+        }
+
+        if (! isset(static::$vendorDirectory)) {
+            static::$vendorDirectory = $cwd.'/vendor';
+        }
+
+        if (! isset(static::$autoloadClassmap)) {
+            static::$autoloadClassmap = require static::$vendorDirectory.'/composer/autoload_classmap.php';
+        }
+
+        if (! isset(static::$autoloadClassmapInversion)) {
+            static::$autoloadClassmapInversion = array_flip(static::$autoloadClassmap);
+        }
+
+        if (! isset(static::$autoloadClassmapInversion[$filePath])) {
+            throw new LogicException(sprintf(
+                'It does not exist in the autoload class map. Run composer dump-autoload to resolve the issue. (%s)',
+                $filePath
+            ));
+        }
+
+        $classMapKey = static::$autoloadClassmapInversion[$filePath];
+
+        static::$madeInstance[$filePath] = new $classMapKey();
+
+        return static::$madeInstance[$filePath];
     }
 }

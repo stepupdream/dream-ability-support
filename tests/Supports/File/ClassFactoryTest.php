@@ -24,6 +24,20 @@ class ClassFactoryTest extends TestCase
     /**
      * @test
      */
+    public function makeByPath(): void
+    {
+        $helpClass = new Help();
+        $newClass = ClassFactory::makeByPath(
+            '/opt/project/vendor/phpunit/phpunit/src/TextUI/Help.php',
+            __DIR__.'/../../..'
+        );
+
+        static::assertEquals($helpClass, $newClass);
+    }
+
+    /**
+     * @test
+     */
     public function makeException(): void
     {
         $this->expectExceptionMessage(
