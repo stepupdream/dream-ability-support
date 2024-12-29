@@ -168,12 +168,4 @@ class YamlFileOperation extends FileOperation
     {
         return count($array) !== count($array, 1);
     }
-
-    /**
-     * Get yamlCache.
-     */
-    public function yamlCache(): array
-    {
-        return $this->yamlCache;
-    }
 }
