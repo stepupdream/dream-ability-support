@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace StepUpDream\DreamAbilitySupport\Supports\File;
 
-use ErrorException;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
 use LogicException;
 use Symfony\Component\Finder\Finder;
 
@@ -14,11 +12,6 @@ class FileOperation
 {
     /**
      * Create the same file as the first argument at the position specified by the second argument.
-     *
-     * @param  string  $content
-     * @param  string  $filePath
-     * @param  bool  $isOverwrite
-     * @return bool
      */
     public function createFile(string $content, string $filePath, bool $isOverwrite = false): bool
     {
@@ -58,13 +51,8 @@ class FileOperation
 
     /**
      * Check if it is the same as the file that already exists.
-     *
-     * @param  string  $content
-     * @param  string  $targetDirectoryPath
-     * @param  string  $fileName
-     * @return bool
      */
-    public function shouldCreate(string $content, string $targetDirectoryPath, string $fileName): bool
+    public function isContentDifferent(string $content, string $targetDirectoryPath, string $fileName): bool
     {
         if (! is_dir($targetDirectoryPath)) {
             return true;
@@ -83,26 +71,18 @@ class FileOperation
     /**
      * Get all the files from the given directory (recursive).
      *
-     * @param  string  $directory
-     * @param  bool  $hidden
      * @return \Symfony\Component\Finder\SplFileInfo[]
+     *
      * @see \Illuminate\Filesystem\Filesystem::allFiles
      */
     public function allFiles(string $directory, bool $hidden = false): array
     {
-        return iterator_to_array(
-            Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory)->sortByName(),
-            false
-        );
+        return iterator_to_array(Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory)->sortByName(), false);
     }
 
     /**
      * Make a directory.
      *
-     * @param  string  $directoryPath
-     * @param  int  $mode
-     * @param  bool  $recursive
-     * @return void
      * @see \Illuminate\Filesystem\Filesystem::makeDirectory
      */
     private function makeDirectory(string $directoryPath, int $mode = 0755, bool $recursive = false): void
@@ -117,8 +97,6 @@ class FileOperation
     /**
      * Write the contents of a file.
      *
-     * @param  string  $path
-     * @param  string  $contents
      * @see \Illuminate\Filesystem\Filesystem::put
      */
     private function put(string $path, string $contents): void
@@ -133,20 +111,18 @@ class FileOperation
      * Delete the file at a given path.
      *
      * @param  string|string[]  $paths
+     *
      * @see \Illuminate\Filesystem\Filesystem::delete
      */
-    private function delete(mixed $paths): void
+    private function delete(array|string $paths): void
     {
+        /** @var string[] $paths */
         $paths = is_array($paths) ? $paths : func_get_args();
 
         $success = true;
 
         foreach ($paths as $path) {
-            try {
-                if (! @unlink($path)) {
-                    $success = false;
-                }
-            } catch (ErrorException) {
+            if (! unlink($path)) {
                 $success = false;
             }
 
@@ -158,9 +134,6 @@ class FileOperation
 
     /**
      * Add Tab Space.
-     *
-     * @param  int  $tabCount
-     * @return string
      */
     public function addTabSpace(int $tabCount = 1): string
     {
@@ -175,9 +148,6 @@ class FileOperation
 
     /**
      * Get the contents of a file.
-     *
-     * @param  string  $path
-     * @return string
      */
     public function get(string $path): string
     {
@@ -185,20 +155,17 @@ class FileOperation
             $contents = file_get_contents($path);
 
             if (! $contents) {
-                throw new LogicException('Failed to get the file. : '.$path);
+                throw new LogicException("Failed to get the file. : $path.");
             }
 
             return $contents;
         }
 
-        throw new FileNotFoundException("File does not exist at path {$path}.");
+        throw new FileNotFoundException("File does not exist at path $path.");
     }
 
     /**
      * Whether a file with the same filename exists or not.
-     *
-     * @param  string  $directory
-     * @return bool
      */
     public function isSameFileNameExist(string $directory): bool
     {

@@ -1,2 +1,7 @@
 parameters:
-    ignoreErrors:
+	ignoreErrors:
+		-
+			message: '#^Trait StepUpDream\\DreamAbilitySupport\\Cache\\Memoization\\Memoization is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: src/Cache/Memoization/Memoization.php

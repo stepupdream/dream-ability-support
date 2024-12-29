@@ -6,44 +6,28 @@ namespace StepUpDream\DreamAbilitySupport\Test\Supports\File;
 
 use PHPUnit\TextUI\Help;
 use StepUpDream\DreamAbilitySupport\Supports\File\ClassFactory;
-use StepUpDream\DreamAbilitySupport\Test\TestCase;
 
-class ClassFactoryTest extends TestCase
-{
-    /**
-     * @test
-     */
-    public function make(): void
-    {
-        $helpClass = new Help();
-        $newClass = ClassFactory::make('PHPUnit\\TextUI\\Help', __DIR__.'/../../..');
+it('creates a class instance using ClassFactory::make', function () {
+    $helpClass = new Help;
+    $newClass = ClassFactory::make('PHPUnit\\TextUI\\Help', realpath(__DIR__.'/../../..'));
 
-        static::assertEquals($helpClass, $newClass);
-    }
+    expect($newClass)->toEqual($helpClass);
+});
 
-    /**
-     * @test
-     */
-    public function makeByPath(): void
-    {
-        $helpClass = new Help();
-        $newClass = ClassFactory::makeByPath(
-            '/opt/project/vendor/phpunit/phpunit/src/TextUI/Help.php',
-            __DIR__.'/../../..'
-        );
+it('creates a class instance using ClassFactory::makeByPath', function () {
+    $helpClass = new Help;
+    $newClass = ClassFactory::makeByPath(
+        realpath(__DIR__.'/../../../vendor/phpunit/phpunit/src/TextUI/Help.php'),
+        realpath(__DIR__.'/../../..'),
+    );
 
-        static::assertEquals($helpClass, $newClass);
-    }
+    expect($newClass)->toEqual($helpClass);
+});
 
-    /**
-     * @test
-     */
-    public function makeException(): void
-    {
-        $this->expectExceptionMessage(
-            'It does not exist in the autoload class map. Run composer dump-autoload to resolve the issue. (aaaa)'
-        );
+it('throws exception for non-existing class', function () {
+    $this->expectExceptionMessage(
+        'It does not exist in the autoload class map. Run composer dump-autoload to resolve the issue. (test)',
+    );
 
-        ClassFactory::make('aaaa', __DIR__.'/../../..');
-    }
-}
+    ClassFactory::make('test', __DIR__.'/../../..');
+});

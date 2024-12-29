@@ -1,0 +1,15 @@
+{
+    "preset": "laravel",
+    "exclude": [
+    ],
+    "rules": {
+        "blank_line_after_opening_tag": true,
+        "linebreak_after_opening_tag": true,
+        "declare_strict_types": true,
+        "date_time_immutable": true,
+        "mb_str_functions": true,
+        "phpdoc_separation": false,
+        "no_extra_blank_lines": true,
+        "simplified_if_return": true
+    }
+}

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace StepUpDream\DreamAbilitySupport\Supports\File;
 
-use Illuminate\Filesystem\Filesystem;
 use LogicException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -21,8 +20,6 @@ class YamlFileOperation extends FileOperation
     /**
      * Read yaml files.
      *
-     * @param  string  $directoryPath
-     * @param  string  $findFileName
      * @return mixed[]
      */
     public function readByFileName(string $directoryPath, string $findFileName): array
@@ -40,7 +37,6 @@ class YamlFileOperation extends FileOperation
     /**
      * Read yaml files.
      *
-     * @param  string  $directoryPath
      * @param  string[]  $exceptFileNames
      * @return mixed[][]
      */
@@ -61,7 +57,7 @@ class YamlFileOperation extends FileOperation
         // Exclude from creation
         if (! empty($exceptFileNames) && ! empty($yamlFiles)) {
             $yamlFiles = collect($yamlFiles)->filter(function ($value, $key) use ($exceptFileNames) {
-                return ! in_array(basename($key, '.yml'), $exceptFileNames, false);
+                return ! in_array(basename($key, '.yml'), $exceptFileNames);
             })->all();
         }
 
@@ -71,8 +67,6 @@ class YamlFileOperation extends FileOperation
     /**
      * Determine if the given path is a directory.
      *
-     * @param  string  $directory
-     * @return bool
      * @see \Illuminate\Filesystem\Filesystem::isDirectory
      */
     protected function isDirectory(string $directory): bool
@@ -83,7 +77,6 @@ class YamlFileOperation extends FileOperation
     /**
      * Recursively get a list of file paths from a directory.
      *
-     * @param  string  $directoryPath
      * @return string[]
      */
     protected function getAllFilePath(string $directoryPath): array
@@ -121,9 +114,8 @@ class YamlFileOperation extends FileOperation
     }
 
     /**
-     * Parse Yaml files.
+     * Parses a YAML file and returns its contents as an associative array.
      *
-     * @param  string  $filePath
      * @return mixed[]
      */
     protected function parseYaml(string $filePath): array
@@ -149,14 +141,17 @@ class YamlFileOperation extends FileOperation
         }
 
         // Rule that there is always one data in Yaml data
-        return reset($yaml);
+        $resetValue = reset($yaml);
+        if (! is_array($resetValue)) {
+            throw new LogicException('Yaml data structure is invalid, expected array: '.$filePath);
+        }
+
+        return $resetValue;
     }
 
     /**
      * Extract the file extension from a file path.
      *
-     * @param  string  $path
-     * @return string
      * @see \Illuminate\Filesystem\Filesystem::extension
      */
     protected function extension(string $path): string
@@ -168,10 +163,17 @@ class YamlFileOperation extends FileOperation
      * Whether it is a multidimensional array.
      *
      * @param  mixed[]  $array
-     * @return bool
      */
     protected function isMultidimensional(array $array): bool
     {
         return count($array) !== count($array, 1);
+    }
+
+    /**
+     * Get yamlCache.
+     */
+    public function yamlCache(): array
+    {
+        return $this->yamlCache;
     }
 }

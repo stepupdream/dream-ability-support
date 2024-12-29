@@ -22,9 +22,6 @@ abstract class BaseCommand extends Command
 
     /**
      * Command execution log.
-     *
-     * @param  string  $description
-     * @return void
      */
     protected function commandDetailLog(string $description = 'Command run detail'): void
     {
@@ -38,7 +35,6 @@ abstract class BaseCommand extends Command
      * Whether it is a multidimensional array.
      *
      * @param  mixed[]  $array
-     * @return bool
      */
     protected function isMultidimensional(array $array): bool
     {
@@ -47,11 +43,8 @@ abstract class BaseCommand extends Command
 
     /**
      * Command option text.
-     *
-     * @param  string  $optionKey
-     * @return string|null
      */
-    protected function optionText(string $optionKey): string|null
+    protected function optionText(string $optionKey): ?string
     {
         $option = $this->option($optionKey);
         if ($option === null) {

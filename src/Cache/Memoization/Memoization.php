@@ -15,11 +15,6 @@ trait Memoization
 
     /**
      * Get an item from the local cache, or execute the given Closure and store the result.
-     *
-     * @param  string  $mainKey
-     * @param  int|string|\Closure  $subKey
-     * @param  \Closure|null  $callback
-     * @return mixed
      */
     public function memoization(string $mainKey, int|string|Closure $subKey, ?Closure $callback = null): mixed
     {
@@ -39,11 +34,8 @@ trait Memoization
 
     /**
      * Clear the data.
-     *
-     * @param  string|null  $mainKey
-     * @param  int|string|null  $subKey
      */
-    public function flushMemoization(string $mainKey = null, int|string $subKey = null): void
+    public function flushMemoization(?string $mainKey = null, int|string|null $subKey = null): void
     {
         if ($mainKey === null && $subKey === null) {
             $this->memoizationValues = [];
