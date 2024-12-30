@@ -15,6 +15,9 @@ abstract class BaseCommand extends Command
      */
     public function __construct()
     {
+        /**
+         * @SuppressWarnings("php:S2918")
+         */
         ini_set('memory_limit', '2056M');
 
         parent::__construct();

@@ -1,0 +1,34 @@
+name: Coding Style Check
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    types: [ opened, synchronize ]
+
+jobs:
+  check:
+    name: Coding Style Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-suggest --no-interaction --no-scripts --no-progress --prefer-dist
+
+      # Run Pint and fail if changes are necessary
+      - name: Run Laravel Pint and check for changes
+        run: |
+          vendor/bin/pint
+          git diff --exit-code
+
+      - name: Execute tests via phpstan
+        run: vendor/bin/phpstan analyse
