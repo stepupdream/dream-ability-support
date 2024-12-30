@@ -152,8 +152,6 @@ class YamlFileOperation extends FileOperation
     /**
      * Extract the file extension from a file path.
      *
-     * @param  string  $path
-     * @return string
      * @see \Illuminate\Filesystem\Filesystem::extension
      */
     protected function extension(string $path): string

@@ -1,4 +1,4 @@
-name: Laravel Pint
+name: Coding Style Check
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     types: [ opened, synchronize ]
 
 jobs:
-  pint:
-    name: LaravelPint
+  check:
+    name: Coding Style Check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -29,3 +29,6 @@ jobs:
         run: |
           vendor/bin/pint
           git diff --exit-code
+
+      - name: Execute tests via phpstan
+        run: vendor/bin/phpstan analyse
