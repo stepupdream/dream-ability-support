@@ -56,7 +56,7 @@ class YamlFileOperation extends FileOperation
 
         // Exclude from creation
         if (! empty($exceptFileNames) && ! empty($yamlFiles)) {
-            $yamlFiles = collect($yamlFiles)->filter(function ($value, $key) use ($exceptFileNames) {
+            $yamlFiles = collect($yamlFiles)->filter(function ($_, $key) use ($exceptFileNames) {
                 return ! in_array(basename($key, '.yml'), $exceptFileNames);
             })->all();
         }
