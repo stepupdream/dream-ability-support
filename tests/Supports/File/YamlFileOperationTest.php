@@ -47,7 +47,7 @@ beforeEach(function () {
 
 it('can read data by directory path', function () {
     $yamlFileOperation = app(YamlFileOperation::class);
-    $textDirectory = __DIR__.'/YamlTest/Yaml';
+    $textDirectory = __DIR__ . '/YamlTest/Yaml';
 
     // Read all data without filtering by path
     $parseAllYaml = $yamlFileOperation->readByDirectoryPath($textDirectory);
@@ -62,7 +62,7 @@ it('can read data by directory path', function () {
 });
 
 it('can read data by file name', function () {
-    $textDirectory = __DIR__.'/YamlTest/Yaml';
+    $textDirectory = __DIR__ . '/YamlTest/Yaml';
     $yamlFileOperation = app(YamlFileOperation::class);
 
     // Read a single YAML file by its filename

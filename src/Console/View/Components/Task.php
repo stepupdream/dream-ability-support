@@ -12,10 +12,23 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use function Termwind\terminal;
 
+/**
+ * A console component for displaying task execution status and progress.
+ *
+ * This class is based on the console output, task description, execution time, and
+ * and execution results (such as DONE, SKIP, FAIL, ERROR).
+ * Provides visually shaping and displaying functions.
+ */
 class Task extends Component
 {
+    /**
+     * Maximum width (character number) of console output
+     */
     private const int MAX_WIDTH = 150;
 
+    /**
+     * Minimum interval for dot display (number of characters)
+     */
     private const int MIN_DOT_SPACING = 10;
 
     /**
@@ -33,7 +46,7 @@ class Task extends Component
 
         $startTime = microtime(true);
         $result = $task ?: 'DONE';
-        $runTime = (' '.number_format((microtime(true) - $startTime) * 1000).'ms');
+        $runTime = ' ' . number_format((microtime(true) - $startTime) * 1000) . 'ms';
         $this->writeDotsAndTime($descriptionWidth, $runTime, $verbosity);
         $this->writeResult($result, $verbosity);
     }
@@ -44,11 +57,13 @@ class Task extends Component
     private function applyMutators(string $description): string
     {
         $mutators = [
-            EnsureDynamicContentIsHighlighted::class, EnsureNoPunctuation::class, EnsureRelativePaths::class,
+            EnsureDynamicContentIsHighlighted::class,
+            EnsureNoPunctuation::class,
+            EnsureRelativePaths::class,
         ];
 
         foreach ($mutators as $mutator) {
-            $description = (new $mutator)->__invoke($description);
+            $description = (new $mutator())->__invoke($description);
         }
 
         return $description;

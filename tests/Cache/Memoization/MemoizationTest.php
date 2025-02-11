@@ -52,8 +52,8 @@ it('tests flushMemoization', function () {
     expect($this->memoizationValues)->toBe(['mainKey' => ['subKey2' => ['id' => 2]]]);
 });
 
-dataset('memoization test params', function () {
-    return [
-        [__FUNCTION__, null], [__FUNCTION__, 1], [__FUNCTION__, 'sbuKey'],
-    ];
-});
+dataset('memoization test params', fn () => [
+    [__FUNCTION__, null],
+    [__FUNCTION__, 1],
+    [__FUNCTION__, 'sbuKey'],
+]);

@@ -6,10 +6,14 @@ namespace StepUpDream\DreamAbilitySupport\Cache\Memoization;
 
 use Closure;
 
+/**
+ * Traits that implement memoization patterns.
+ * Caches calculation results to prevent recalculations for the same input.
+ */
 trait Memoization
 {
     /**
-     * @var mixed[]|mixed[][]
+     * @var array|array[]
      */
     protected array $memoizationValues = [];
 

@@ -8,6 +8,9 @@ use Illuminate\Console\Command;
 use Illuminate\Console\View\Components\Info;
 use LogicException;
 
+/**
+ * BaseCommand class.
+ */
 abstract class BaseCommand extends Command
 {
     /**
@@ -29,15 +32,13 @@ abstract class BaseCommand extends Command
     protected function commandDetailLog(string $description = 'Command run detail'): void
     {
         (new Info($this->output))->render($description);
-        $runTime = number_format((microtime(true) - LARAVEL_START) * 1000).'ms';
+        $runTime = number_format((microtime(true) - LARAVEL_START) * 1000) . 'ms';
         $usedMemory = sprintf('%sMB', memory_get_peak_usage(true) / 1024 / 1024);
         $this->line(sprintf("  run_time : %s\n  used_memory : %s\n", $runTime, $usedMemory));
     }
 
     /**
      * Whether it is a multidimensional array.
-     *
-     * @param  mixed[]  $array
      */
     protected function isMultidimensional(array $array): bool
     {
@@ -58,6 +59,6 @@ abstract class BaseCommand extends Command
             return $option;
         }
 
-        throw new LogicException('The option specification is incorrect: '.$optionKey);
+        throw new LogicException('The option specification is incorrect: ' . $optionKey);
     }
 }

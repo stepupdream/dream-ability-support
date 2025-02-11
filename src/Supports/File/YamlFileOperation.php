@@ -7,20 +7,21 @@ namespace StepUpDream\DreamAbilitySupport\Supports\File;
 use LogicException;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * YamlFileOperation class.
+ */
 class YamlFileOperation extends FileOperation
 {
     /**
      * First element key: directory path.
      * Second element key: file path.
      *
-     * @var mixed[][][]
+     * @var array[][]
      */
     protected array $yamlCache = [];
 
     /**
      * Read yaml files.
-     *
-     * @return mixed[]
      */
     public function readByFileName(string $directoryPath, string $findFileName): array
     {
@@ -37,13 +38,13 @@ class YamlFileOperation extends FileOperation
     /**
      * Read yaml files.
      *
-     * @param  string[]  $exceptFileNames
-     * @return mixed[][]
+     * @param string[] $exceptFileNames
+     * @return array[]
      */
     public function readByDirectoryPath(string $directoryPath, array $exceptFileNames = []): array
     {
-        if (! $this->isDirectory($directoryPath)) {
-            throw new LogicException($directoryPath.': read path must be a directory');
+        if (!$this->isDirectory($directoryPath)) {
+            throw new LogicException($directoryPath . ': read path must be a directory');
         }
 
         if (empty($this->yamlCache[$directoryPath])) {
@@ -55,10 +56,8 @@ class YamlFileOperation extends FileOperation
         }
 
         // Exclude from creation
-        if (! empty($exceptFileNames) && ! empty($yamlFiles)) {
-            $yamlFiles = collect($yamlFiles)->filter(function ($_, $key) use ($exceptFileNames) {
-                return ! in_array(basename($key, '.yml'), $exceptFileNames);
-            })->all();
+        if ($exceptFileNames !== [] && $yamlFiles !== []) {
+            $yamlFiles = collect($yamlFiles)->filter(fn ($_, $key) => !in_array(basename($key, '.yml'), $exceptFileNames))->all();
         }
 
         return $yamlFiles;
@@ -83,13 +82,13 @@ class YamlFileOperation extends FileOperation
     {
         $filePaths = [];
 
-        if (! $this->isDirectory($directoryPath)) {
+        if (!$this->isDirectory($directoryPath)) {
             throw new LogicException('Not a Directory');
         }
 
         $files = $this->allFiles($directoryPath);
         foreach ($files as $file) {
-            $realPath = (string) $file->getRealPath();
+            $realPath = (string)$file->getRealPath();
             $filePaths[$realPath] = $realPath;
         }
 
@@ -99,8 +98,8 @@ class YamlFileOperation extends FileOperation
     /**
      * Parse all definition Yaml files.
      *
-     * @param  string[]  $filePaths
-     * @return mixed[][]
+     * @param string[] $filePaths
+     * @return array[]
      */
     protected function parseAllYaml(array $filePaths): array
     {
@@ -115,35 +114,33 @@ class YamlFileOperation extends FileOperation
 
     /**
      * Parses a YAML file and returns its contents as an associative array.
-     *
-     * @return mixed[]
      */
     protected function parseYaml(string $filePath): array
     {
         $extension = $this->extension($filePath);
 
         if ($extension !== 'yml') {
-            throw new LogicException('Could not parse because it is not Yaml data filePath: '.$filePath);
+            throw new LogicException('Could not parse because it is not Yaml data filePath: ' . $filePath);
         }
 
         $contents = file_get_contents($filePath);
-        if (! $contents) {
-            throw new LogicException('Failed to get the file :'.$filePath);
+        if (!$contents) {
+            throw new LogicException("Didn't get the file :" . $filePath);
         }
 
         $yaml = Yaml::parse($contents);
-        if (! is_array($yaml) || ! $this->isMultidimensional($yaml)) {
-            throw new LogicException('Yaml file description is not in array format: '.$filePath);
+        if (!is_array($yaml) || !$this->isMultidimensional($yaml)) {
+            throw new LogicException('YAML file description is not in array format: ' . $filePath);
         }
 
         if (count($yaml) !== 1) {
-            throw new LogicException('Yaml data must be one data per file filePath: '.$filePath);
+            throw new LogicException('YAML data must be one data per a file filePath: ' . $filePath);
         }
 
-        // Rule that there is always one data in Yaml data
+        // Rule that there is always one data in YAML data
         $resetValue = reset($yaml);
-        if (! is_array($resetValue)) {
-            throw new LogicException('Yaml data structure is invalid, expected array: '.$filePath);
+        if (!is_array($resetValue)) {
+            throw new LogicException('YAML data structure is invalid, expected array: ' . $filePath);
         }
 
         return $resetValue;
@@ -161,8 +158,6 @@ class YamlFileOperation extends FileOperation
 
     /**
      * Whether it is a multidimensional array.
-     *
-     * @param  mixed[]  $array
      */
     protected function isMultidimensional(array $array): bool
     {

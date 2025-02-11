@@ -7,7 +7,11 @@ namespace StepUpDream\DreamAbilitySupport\Supports\File;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use LogicException;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
+/**
+ * FileOperation class.
+ */
 class FileOperation
 {
     /**
@@ -15,28 +19,27 @@ class FileOperation
      */
     public function createFile(string $content, string $filePath, bool $isOverwrite = false): bool
     {
+        $result = false;
         $dirPath = dirname($filePath);
 
-        if (! is_dir($dirPath)) {
+        if (!is_dir($dirPath)) {
             $this->makeDirectory($dirPath, 0777, true);
         }
 
-        if (! file_exists($filePath)) {
+        if (file_exists($filePath)) {
+            if ($isOverwrite) {
+                // Hack:
+                // An error occurred when overwriting, so always delete → create
+                $this->delete($filePath);
+                $this->put($filePath, $content);
+                $result = true;
+            }
+        } else {
             $this->put($filePath, $content);
-
-            return true;
+            $result = true;
         }
 
-        if ($isOverwrite) {
-            // Hack:
-            // An error occurred when overwriting, so always delete → create
-            $this->delete($filePath);
-            $this->put($filePath, $content);
-
-            return true;
-        }
-
-        return false;
+        return $result;
     }
 
     /**
@@ -44,8 +47,8 @@ class FileOperation
      */
     public function createGitKeep(string $directoryPath): void
     {
-        if (! is_dir($directoryPath)) {
-            $this->createFile('gitkeep', $directoryPath.'/.gitkeep');
+        if (!is_dir($directoryPath)) {
+            $this->createFile('gitkeep', $directoryPath . '/.gitkeep');
         }
     }
 
@@ -54,7 +57,7 @@ class FileOperation
      */
     public function isContentDifferent(string $content, string $targetDirectoryPath, string $fileName): bool
     {
-        if (! is_dir($targetDirectoryPath)) {
+        if (!is_dir($targetDirectoryPath)) {
             return true;
         }
 
@@ -71,13 +74,13 @@ class FileOperation
     /**
      * Get all the files from the given directory (recursive).
      *
-     * @return \Symfony\Component\Finder\SplFileInfo[]
+     * @return SplFileInfo[]
      *
      * @see \Illuminate\Filesystem\Filesystem::allFiles
      */
     public function allFiles(string $directory, bool $hidden = false): array
     {
-        return iterator_to_array(Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory)->sortByName(), false);
+        return iterator_to_array(Finder::create()->files()->ignoreDotFiles(!$hidden)->in($directory)->sortByName(), false);
     }
 
     /**
@@ -89,8 +92,8 @@ class FileOperation
     {
         $result = mkdir($directoryPath, $mode, $recursive);
 
-        if (! $result) {
-            throw new LogicException($directoryPath.': Failed to make directory');
+        if (!$result) {
+            throw new LogicException($directoryPath . ': Failed to make directory');
         }
     }
 
@@ -102,15 +105,15 @@ class FileOperation
     private function put(string $path, string $contents): void
     {
         $result = file_put_contents($path, $contents);
-        if (! $result) {
-            throw new LogicException($path.': Failed to create');
+        if (!$result) {
+            throw new LogicException($path . ': Failed to create');
         }
     }
 
     /**
      * Delete the file at a given path.
      *
-     * @param  string|string[]  $paths
+     * @param string|string[] $paths
      *
      * @see \Illuminate\Filesystem\Filesystem::delete
      */
@@ -122,12 +125,12 @@ class FileOperation
         $success = true;
 
         foreach ($paths as $path) {
-            if (! unlink($path)) {
+            if (!unlink($path)) {
                 $success = false;
             }
 
-            if (! $success) {
-                throw new LogicException($path.': Failed to delete');
+            if (!$success) {
+                throw new LogicException($path . ': Failed to delete');
             }
         }
     }
@@ -154,7 +157,7 @@ class FileOperation
         if (is_file($path)) {
             $contents = file_get_contents($path);
 
-            if (! $contents) {
+            if (!$contents) {
                 throw new LogicException("Failed to get the file. : $path.");
             }
 

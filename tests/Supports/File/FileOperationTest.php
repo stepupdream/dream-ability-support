@@ -10,22 +10,22 @@ use Symfony\Component\Finder\SplFileInfo;
 
 // Mock the filesystem for testing if needed.
 beforeEach(function () {
-    $this->fileOperation = new FileOperation;
-    $this->tempDir = sys_get_temp_dir().'/test-dir-'.uniqid();
+    $this->fileOperation = new FileOperation();
+    $this->tempDir = sys_get_temp_dir() . '/test-dir-' . uniqid('', true);
     mkdir($this->tempDir, 0777, true);
 });
 
 afterEach(function () {
     // Recursive directory deletion function
     $deleteDirectory = function (string $directory) use (&$deleteDirectory) {
-        if (! is_dir($directory)) {
+        if (!is_dir($directory)) {
             return;
         }
 
         // Get all items in the directory except "." and ".."
         $items = array_diff(scandir($directory), ['.', '..']);
         foreach ($items as $item) {
-            $itemPath = $directory.DIRECTORY_SEPARATOR.$item;
+            $itemPath = $directory . DIRECTORY_SEPARATOR . $item;
 
             if (is_dir($itemPath)) {
                 // If it's a directory, recursively delete its contents
@@ -48,7 +48,7 @@ afterEach(function () {
 
 describe('createFile', function () {
     it('creates a new file if it does not exist', function () {
-        $filePath = $this->tempDir.'/test.txt';
+        $filePath = $this->tempDir . '/test.txt';
         $content = 'Hello World';
         $result = $this->fileOperation->createFile($content, $filePath);
         expect($result)->toBeTrue()
@@ -57,7 +57,7 @@ describe('createFile', function () {
     });
 
     it('overwrites an existing file when $isOverwrite is true', function () {
-        $filePath = $this->tempDir.'/test.txt';
+        $filePath = $this->tempDir . '/test.txt';
         $initialContent = 'Initial Content';
         $newContent = 'Updated Content';
         file_put_contents($filePath, $initialContent);
@@ -68,7 +68,7 @@ describe('createFile', function () {
     });
 
     it('does not overwrite an existing file when $isOverwrite is false', function () {
-        $filePath = $this->tempDir.'/test.txt';
+        $filePath = $this->tempDir . '/test.txt';
         $initialContent = 'Initial Content';
         $newContent = 'Updated Content';
         file_put_contents($filePath, $initialContent);
@@ -81,9 +81,9 @@ describe('createFile', function () {
 
 describe('createGitKeep', function () {
     it('creates a .gitkeep file', function () {
-        $directoryPath = $this->tempDir.'/nested-dir';
+        $directoryPath = $this->tempDir . '/nested-dir';
         $this->fileOperation->createGitKeep($directoryPath);
-        $gitKeepPath = $directoryPath.'/.gitkeep';
+        $gitKeepPath = $directoryPath . '/.gitkeep';
 
         expect(file_exists($directoryPath))->toBeTrue()
             ->and(file_exists($gitKeepPath))->toBeTrue()
@@ -92,7 +92,7 @@ describe('createGitKeep', function () {
 
     it('does nothing if the .gitkeep file already exists', function () {
         $directoryPath = $this->tempDir;
-        $gitKeepPath = $directoryPath.'/.gitkeep';
+        $gitKeepPath = $directoryPath . '/.gitkeep';
         file_put_contents($gitKeepPath, 'existing');
 
         $this->fileOperation->createGitKeep($directoryPath);
@@ -102,7 +102,7 @@ describe('createGitKeep', function () {
 
 describe('shouldCreate', function () {
     it('returns true if the directory does not exist', function () {
-        $targetDirectoryPath = $this->tempDir.'/non-existent-dir';
+        $targetDirectoryPath = $this->tempDir . '/non-existent-dir';
         $content = 'Test Content';
         $fileName = 'test.txt';
 
@@ -113,7 +113,7 @@ describe('shouldCreate', function () {
     it('returns true if the file content is different', function () {
         $targetDirectoryPath = $this->tempDir;
         $fileName = 'test.txt';
-        $filePath = $targetDirectoryPath.'/'.$fileName;
+        $filePath = $targetDirectoryPath . '/' . $fileName;
         file_put_contents($filePath, 'Different Content');
 
         $result = $this->fileOperation->isContentDifferent('Updated Content', $targetDirectoryPath, $fileName);
@@ -124,7 +124,7 @@ describe('shouldCreate', function () {
         $targetDirectoryPath = $this->tempDir;
         $fileName = 'test.txt';
         $content = 'Same Content';
-        $filePath = $targetDirectoryPath.'/'.$fileName;
+        $filePath = $targetDirectoryPath . '/' . $fileName;
         file_put_contents($filePath, $content);
 
         $result = $this->fileOperation->isContentDifferent($content, $targetDirectoryPath, $fileName);
@@ -134,8 +134,8 @@ describe('shouldCreate', function () {
 
 describe('allFiles', function () {
     it('retrieves all files in a directory', function () {
-        file_put_contents($this->tempDir.'/file1.txt', 'Content 1');
-        file_put_contents($this->tempDir.'/file2.txt', 'Content 2');
+        file_put_contents($this->tempDir . '/file1.txt', 'Content 1');
+        file_put_contents($this->tempDir . '/file2.txt', 'Content 2');
 
         $files = $this->fileOperation->allFiles($this->tempDir);
         expect($files)->toHaveCount(2)
@@ -143,8 +143,8 @@ describe('allFiles', function () {
     });
 
     it('ignores dotfiles by default', function () {
-        file_put_contents($this->tempDir.'/.hidden', 'Hidden Content');
-        file_put_contents($this->tempDir.'/visible.txt', 'Visible Content');
+        file_put_contents($this->tempDir . '/.hidden', 'Hidden Content');
+        file_put_contents($this->tempDir . '/visible.txt', 'Visible Content');
 
         $files = $this->fileOperation->allFiles($this->tempDir);
         expect($files)->toHaveCount(1)
@@ -154,17 +154,17 @@ describe('allFiles', function () {
 
 describe('isSameFileNameExist', function () {
     it('returns true if duplicate filenames exist', function () {
-        file_put_contents($this->tempDir.'/file1.txt', 'Content 1');
-        mkdir($this->tempDir.'/nested');
-        file_put_contents($this->tempDir.'/nested/file1.txt', 'Content 2');
+        file_put_contents($this->tempDir . '/file1.txt', 'Content 1');
+        mkdir($this->tempDir . '/nested');
+        file_put_contents($this->tempDir . '/nested/file1.txt', 'Content 2');
 
         $result = $this->fileOperation->isSameFileNameExist($this->tempDir);
         expect($result)->toBeTrue();
     });
 
     it('returns false if all filenames are unique', function () {
-        file_put_contents($this->tempDir.'/file1.txt', 'Content 1');
-        file_put_contents($this->tempDir.'/file2.txt', 'Content 2');
+        file_put_contents($this->tempDir . '/file1.txt', 'Content 1');
+        file_put_contents($this->tempDir . '/file2.txt', 'Content 2');
 
         $result = $this->fileOperation->isSameFileNameExist($this->tempDir);
         expect($result)->toBeFalse();
@@ -185,7 +185,7 @@ describe('addTabSpace', function () {
 
 describe('get', function () {
     it('returns the content of an existing file', function () {
-        $filePath = $this->tempDir.'/test.txt';
+        $filePath = $this->tempDir . '/test.txt';
         $content = 'File Content';
         file_put_contents($filePath, $content);
 
@@ -194,6 +194,6 @@ describe('get', function () {
     });
 
     it('throws an exception if the file does not exist', function () {
-        $this->fileOperation->get($this->tempDir.'/non-existent-file.txt');
+        $this->fileOperation->get($this->tempDir . '/non-existent-file.txt');
     })->throws(FileNotFoundException::class);
 });
