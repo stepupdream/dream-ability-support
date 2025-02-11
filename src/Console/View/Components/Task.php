@@ -45,7 +45,7 @@ class Task extends Component
         $this->output->write("  $description ", false, $verbosity);
 
         $startTime = microtime(true);
-        $result = $task ?: 'DONE';
+        $result = $task ?? 'DONE';
         $runTime = ' ' . number_format((microtime(true) - $startTime) * 1000) . 'ms';
         $this->writeDotsAndTime($descriptionWidth, $runTime, $verbosity);
         $this->writeResult($result, $verbosity);

@@ -105,7 +105,7 @@ class FileOperation
     private function put(string $path, string $contents): void
     {
         $result = file_put_contents($path, $contents);
-        if (!$result) {
+        if ($result === false) {
             throw new LogicException($path . ': Failed to create');
         }
     }
@@ -157,7 +157,7 @@ class FileOperation
         if (is_file($path)) {
             $contents = file_get_contents($path);
 
-            if (!$contents) {
+            if ($contents === false) {
                 throw new LogicException("Failed to get the file. : $path.");
             }
 

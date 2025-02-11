@@ -1,9 +1,14 @@
 includes:
     - vendor/larastan/larastan/extension.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
     - vendor/nesbot/carbon/extension.neon
     - phpstan-baseline.neon
 
 parameters:
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    reportPossiblyNonexistentGeneralArrayOffset: true
+    reportPossiblyNonexistentConstantArrayOffset: true
+
     paths:
         - src
 

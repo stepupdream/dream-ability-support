@@ -12,7 +12,7 @@ use LogicException;
 class ClassFactory
 {
     /**
-     * @var object[]
+     * @var array<string, object>
      */
     protected static array $madeInstance;
 
@@ -82,14 +82,9 @@ class ClassFactory
      */
     protected static function resolveInstance(string $key, string $classMapKey): object
     {
-        // Return the already created instance if it exists
-        if (isset(static::$madeInstance[$key])) {
-            return static::$madeInstance[$key];
-        }
+        static::$madeInstance[$key] ??= new $classMapKey();
 
-        // Create a new instance of the class and cache it
-        static::$madeInstance[$key] = new $classMapKey();
-
+        /** @phpstan-ignore-next-line */
         return static::$madeInstance[$key];
     }
 

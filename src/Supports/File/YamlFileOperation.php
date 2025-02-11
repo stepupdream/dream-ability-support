@@ -49,17 +49,17 @@ class YamlFileOperation extends FileOperation
             throw new LogicException($directoryPath . ': read path must be a directory');
         }
 
-        if (empty($this->yamlCache[$directoryPath])) {
+        if (array_key_exists($directoryPath, $this->yamlCache)) {
+            $yamlFiles = $this->yamlCache[$directoryPath];
+        } else {
             $filePaths = $this->getAllFilePath($directoryPath);
             $yamlFiles = $this->parseAllYaml($filePaths);
             $this->yamlCache[$directoryPath] = $yamlFiles;
-        } else {
-            $yamlFiles = $this->yamlCache[$directoryPath];
         }
 
         // Exclude from creation
         if ($exceptFileNames !== [] && $yamlFiles !== []) {
-            $yamlFiles = collect($yamlFiles)->filter(fn ($_, $key) => !in_array(basename($key, '.yml'), $exceptFileNames))->all();
+            $yamlFiles = collect($yamlFiles)->filter(fn ($_, $key) => !in_array(basename($key, '.yml'), $exceptFileNames, true))->all();
         }
 
         return $yamlFiles;
@@ -128,7 +128,7 @@ class YamlFileOperation extends FileOperation
         }
 
         $contents = file_get_contents($filePath);
-        if (!$contents) {
+        if ($contents === false) {
             throw new LogicException("Didn't get the file :" . $filePath);
         }
 
