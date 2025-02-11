@@ -39,6 +39,8 @@ abstract class BaseCommand extends Command
 
     /**
      * Whether it is a multidimensional array.
+     *
+     * @param mixed[] $array
      */
     protected function isMultidimensional(array $array): bool
     {

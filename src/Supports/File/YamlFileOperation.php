@@ -16,12 +16,14 @@ class YamlFileOperation extends FileOperation
      * First element key: directory path.
      * Second element key: file path.
      *
-     * @var array[][]
+     * @var mixed[][][]
      */
     protected array $yamlCache = [];
 
     /**
      * Read yaml files.
+     *
+     * @return mixed[]
      */
     public function readByFileName(string $directoryPath, string $findFileName): array
     {
@@ -39,7 +41,7 @@ class YamlFileOperation extends FileOperation
      * Read yaml files.
      *
      * @param string[] $exceptFileNames
-     * @return array[]
+     * @return mixed[][]
      */
     public function readByDirectoryPath(string $directoryPath, array $exceptFileNames = []): array
     {
@@ -99,7 +101,7 @@ class YamlFileOperation extends FileOperation
      * Parse all definition Yaml files.
      *
      * @param string[] $filePaths
-     * @return array[]
+     * @return mixed[][]
      */
     protected function parseAllYaml(array $filePaths): array
     {
@@ -114,6 +116,8 @@ class YamlFileOperation extends FileOperation
 
     /**
      * Parses a YAML file and returns its contents as an associative array.
+     *
+     * @return mixed[]
      */
     protected function parseYaml(string $filePath): array
     {
@@ -158,6 +162,8 @@ class YamlFileOperation extends FileOperation
 
     /**
      * Whether it is a multidimensional array.
+     *
+     * @param mixed[] $array
      */
     protected function isMultidimensional(array $array): bool
     {
