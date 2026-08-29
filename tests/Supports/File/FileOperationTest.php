@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StepUpDream\DreamAbilitySupport\Test\Supports\File;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use StepUpDream\DreamAbilitySupport\Supports\CodeGeneration\PreservedBlockMerger;
 use StepUpDream\DreamAbilitySupport\Supports\File\FileOperation;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -76,6 +77,59 @@ describe('createFile', function () {
         $result = $this->fileOperation->createFile($newContent, $filePath);
         expect($result)->toBeFalse()
             ->and(file_get_contents($filePath))->toBe($initialContent);
+    });
+});
+
+describe('createFilePreservingBlock', function () {
+    it('creates a new file if it does not exist', function () {
+        $filePath = $this->tempDir . '/test.php';
+        $content = "// preserve:begin(body)\n// preserve:end(body)\n";
+
+        $result = $this->fileOperation->createFilePreservingBlock($content, $filePath);
+        expect($result)->toBeTrue()
+            ->and(file_get_contents($filePath))->toBe($content);
+    });
+
+    it('keeps the preserved block of the existing file', function () {
+        $filePath = $this->tempDir . '/test.php';
+        file_put_contents($filePath, "old\n// preserve:begin(body)\nhand written\n// preserve:end(body)\n");
+
+        $result = $this->fileOperation->createFilePreservingBlock(
+            "new\n// preserve:begin(body)\n// preserve:end(body)\n",
+            $filePath
+        );
+
+        expect($result)->toBeTrue()
+            ->and(file_get_contents($filePath))
+            ->toBe("new\n// preserve:begin(body)\nhand written\n// preserve:end(body)\n");
+    });
+
+    it('does not write the file when the merged content is the same', function () {
+        $filePath = $this->tempDir . '/test.php';
+        $content = "// preserve:begin(body)\nhand written\n// preserve:end(body)\n";
+        file_put_contents($filePath, $content);
+
+        $result = $this->fileOperation->createFilePreservingBlock(
+            "// preserve:begin(body)\n// preserve:end(body)\n",
+            $filePath
+        );
+
+        expect($result)->toBeFalse()
+            ->and(file_get_contents($filePath))->toBe($content);
+    });
+
+    it('can use its own merger', function () {
+        $filePath = $this->tempDir . '/test.yml';
+        file_put_contents($filePath, "# BEGIN CUSTOM CODE(setting)\ndebug: true\n# END CUSTOM CODE(setting)\n");
+
+        $this->fileOperation->createFilePreservingBlock(
+            "generated: true\n# BEGIN CUSTOM CODE(setting)\n# END CUSTOM CODE(setting)\n",
+            $filePath,
+            new PreservedBlockMerger('BEGIN CUSTOM CODE', 'END CUSTOM CODE')
+        );
+
+        expect(file_get_contents($filePath))
+            ->toBe("generated: true\n# BEGIN CUSTOM CODE(setting)\ndebug: true\n# END CUSTOM CODE(setting)\n");
     });
 });
 

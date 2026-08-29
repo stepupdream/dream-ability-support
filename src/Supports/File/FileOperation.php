@@ -6,6 +6,7 @@ namespace StepUpDream\DreamAbilitySupport\Supports\File;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use LogicException;
+use StepUpDream\DreamAbilitySupport\Supports\CodeGeneration\PreservedBlockMerger;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -40,6 +41,34 @@ class FileOperation
         }
 
         return $result;
+    }
+
+    /**
+     * Create the file while keeping the preserved blocks of the file that already exists.
+     *
+     * Unlike createFile(), the file is always regenerated: only the ranges that are surrounded by the markers of
+     * PreservedBlockMerger are taken over from the existing file, so hand-written code is not lost.
+     *
+     * @return bool Whether the file was created or updated.
+     */
+    public function createFilePreservingBlock(
+        string $content,
+        string $filePath,
+        ?PreservedBlockMerger $preservedBlockMerger = null,
+    ): bool {
+        if (!file_exists($filePath)) {
+            return $this->createFile($content, $filePath);
+        }
+
+        $preservedBlockMerger ??= new PreservedBlockMerger();
+        $currentContent = $this->get($filePath);
+        $mergedContent = $preservedBlockMerger->merge($content, $currentContent);
+
+        if ($mergedContent === $currentContent) {
+            return false;
+        }
+
+        return $this->createFile($mergedContent, $filePath, true);
     }
 
     /**
